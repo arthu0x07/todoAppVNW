@@ -15,14 +15,25 @@ const Container = styled.div`
   height: auto;
   min-height: 500px;
   background-color: rgba(255, 255, 255, 0.2);
-  border: 3px solid #22222250;
-  box-shadow: 14px 10px 80px 20px #f2f2f278;
+  box-shadow: 20px 16px 80px 20px #f2f2f278;
   border-radius: 1px;
   backdrop-filter: blur(10px);
   margin: 0 auto;
   margin-top: 15vh;
-
   padding: 2px;
+  padding-bottom: 5rem;
+
+  animation: translateShadow 1s ease infinite alternate;
+
+  @keyframes translateShadow {
+    0% {
+      box-shadow: 20px 16px 80px 20px #f2f2f278;
+    }
+
+    100% {
+      box-shadow: -20px -16px 80px 20px #f2f2f278;
+    }
+  }
 `;
 
 // Fazer um conteiner englobando o input e botão
@@ -99,11 +110,31 @@ const ButtonAddTask = styled.button`
 `;
 
 const ContainerListTask = styled.ul`
-  width: 90%;
+  width: calc(90% + 12px);
   height: auto;
+  max-height: 400px;
   margin: 0 auto;
   margin-top: 3rem;
   min-height: 80px;
+  overflow-y: scroll;
+  padding-right: 5px;
+  padding-left: 10px;
+
+  ::-webkit-scrollbar {
+    width: 1px;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #85b948;
+    border-radius: 20px;
+    border: 4px solid #efefef;
+  }
 `;
 
 const Task = styled.li`
@@ -125,7 +156,7 @@ const Task = styled.li`
 
   p {
     width: 80%;
-    font-size: 2.4rem;
+    font-size: 2rem;
     color: #f2f2f240;
     font-family: "Prompt";
     transition: 1s ease;
@@ -178,6 +209,52 @@ const ButtonDelete = styled.button`
 
 export function Home() {
   const [ActualTaskName, SetActualTaskName] = useState("");
+  const [ListTask, setListTask] = useState([
+    {
+      name: "Entregar livro",
+    },
+    {
+      name: "Entregar Controle",
+    },
+    {
+      name: "Entregar Mouse",
+    },
+    {
+      name: "Entregar Notebook",
+    },
+    {
+      name: "Entregar Teclado",
+    },
+    {
+      name: "Entregar Celular",
+    },
+  ]);
+
+  function handleAddTask() {
+    if (ActualTaskName == "") {
+      alert("Cria tarefa vazia não amigo...");
+    } else {
+      let ActualTask = ActualTaskName;
+      SetActualTaskName("");
+
+      let NewListTask = ListTask;
+      NewListTask = [...NewListTask, { name: ActualTask }];
+      setListTask(NewListTask);
+    }
+  }
+
+  function handleRemoveTask(id) {
+    // Da outra forma não estáva funcionando...
+
+    setListTask(
+      ListTask.filter((item, index) => {
+        if (id == index) {
+          return false;
+        }
+        return true;
+      })
+    );
+  }
 
   return (
     <Container>
@@ -189,27 +266,34 @@ export function Home() {
             SetActualTaskName(e.target.value);
           }}
         />
-        <ButtonAddTask>
+        <ButtonAddTask
+          onClick={(e) => {
+            e.preventDefault();
+            handleAddTask();
+          }}
+        >
           <img src={iconButton} alt="Icone de enviar tarefa" />
         </ButtonAddTask>
       </ContainerForms>
 
       <ContainerListTask>
-        <Task>
-          <p>Entregar livro</p>
+        {ListTask.map((item, index) => {
+          console.log(index);
 
-          <ButtonDelete>
-            <img src={iconButtonDelete} alt="Botão de exclusão de tarefa" />
-          </ButtonDelete>
-        </Task>
+          return (
+            <Task key={index}>
+              <p>{item.name}</p>
 
-        <Task>
-          <p>Entregar livro</p>
-
-          <ButtonDelete>
-            <img src={iconButtonDelete} alt="Botão de exclusão de tarefa" />
-          </ButtonDelete>
-        </Task>
+              <ButtonDelete
+                onClick={() => {
+                  handleRemoveTask(index);
+                }}
+              >
+                <img src={iconButtonDelete} alt="Botão de exclusão de tarefa" />
+              </ButtonDelete>
+            </Task>
+          );
+        })}
       </ContainerListTask>
     </Container>
   );
