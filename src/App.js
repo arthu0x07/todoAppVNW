@@ -1,24 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+// Preciso ter um formulário com um input e um botão.
+// Preciso ter um container para renderizar a lista
+
+import { GlobalStyles } from "./Styles/GlobalStyle";
+import { Home } from "./Pages/Home/index";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <GlobalStyles />
+      <Home />
+    </>
   );
 }
 
